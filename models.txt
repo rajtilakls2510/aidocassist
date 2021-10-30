@@ -1,0 +1,8 @@
+- Normal Disease Prediction
+(https://www.kaggle.com/itachi9604/disease-symptom-description-dataset?select=dataset.csv)
+- Bone Fracture Detection X ray
+- Covid-19 using Chest X Ray
+- Pneumonia using Chest X Ray
+- Breast Cancer Detection
+- Diabetes Detection
+- Tumour Detection (Just for Future) (https://www.kaggle.com/amitkarmakar41/tumour-multiclass-dataset) 

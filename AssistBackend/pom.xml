@@ -22,6 +22,14 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.pmml4s/pmml4s -->
+		<dependency>
+			<groupId>org.pmml4s</groupId>
+			<artifactId>pmml4s_2.13</artifactId>
+			<version>0.9.12</version>
+		</dependency>
+
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
