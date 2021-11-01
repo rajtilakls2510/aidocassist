@@ -31,9 +31,10 @@ const Navbar = () => {
 
         <div className="nav-links-container " ref={linksRef}>
           <ul className="nav-links ">
-            <li className="nav-link" onClick={handleToggle}>
-              {/* <Link to="/hadmin"> Dashboard</Link>  */}
-              <a src="#">Home</a>
+            <li>
+              <Link to="/" className="nav-link" onClick={handleToggle}>
+                Home
+              </Link>
             </li>
           </ul>
         </div>
