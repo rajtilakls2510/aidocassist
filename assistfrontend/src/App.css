@@ -517,6 +517,7 @@ Disease Page
   align-items: flex-start;
   row-gap: 1rem;
 }
+
 .symptom-select-section h5 {
   font-weight: 700;
 }
@@ -555,6 +556,7 @@ Disease Page
 
 .selected-single-symptom-container p {
   font-weight: 500;
+  text-transform: capitalize;
 }
 
 .selected-single-symptom-container svg:hover {
@@ -617,7 +619,7 @@ Disease Page
   row-gap: 1rem;
 }
 
-.symptoms-container h5 {
+.symptom-container-title {
   font-weight: 700;
 }
 
@@ -637,6 +639,10 @@ Disease Page
   box-shadow: var(--shadow-1);
   border: 1px solid var(--primary-200);
   transition: var(--transition);
+}
+
+.single-symptom p {
+  text-transform: capitalize;
 }
 
 .single-symptom:hover {

@@ -34,7 +34,6 @@ public class DiseaseController {
         List<SymptomHolder> allSymptoms;
         try {
             allSymptoms = symptomsService.getAllSymptoms();
-            System.out.println(allSymptoms.size());
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

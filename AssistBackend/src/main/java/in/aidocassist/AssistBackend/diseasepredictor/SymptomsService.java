@@ -27,7 +27,6 @@ public class SymptomsService {
     public List<SymptomHolder> getAllSymptoms() throws IOException {
         List<SymptomHolder> symptoms = new ArrayList<>();
         for (CSVRecord record : csvRecords) symptoms.add(new SymptomHolder(record.get("Symptom"), record.get("Type")));
-        System.out.println(symptoms.size());
         return symptoms;
     }
 }
