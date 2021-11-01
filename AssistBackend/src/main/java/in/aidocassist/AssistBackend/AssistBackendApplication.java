@@ -1,15 +1,16 @@
 package in.aidocassist.AssistBackend;
 
-import org.pmml4s.model.Model;
+import in.aidocassist.AssistBackend.diseasepredictor.DescriptionPrecautionService;
+import in.aidocassist.AssistBackend.diseasepredictor.PredictorService;
+import in.aidocassist.AssistBackend.diseasepredictor.SymptomsService;
+import org.apache.commons.csv.CSVRecord;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.util.ResourceUtils;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.Optional;
 
 @SpringBootApplication
 public class AssistBackendApplication {
@@ -19,40 +20,37 @@ public class AssistBackendApplication {
     }
 
     @Bean
-    CommandLineRunner runner1() {
+    CommandLineRunner runner1(SymptomsService diseaseSymptomsService, PredictorService diseasePredictorService, DescriptionPrecautionService precautionService) {
 
         // Loads model and predict an output
 
         return args -> {
-            Model model = Model.fromFile(ResourceUtils.getFile("classpath:RFClassifier.pmml"));
-            Map<String, Integer> values = new HashMap<>();
-            for (String name : model.inputNames()) {
-                ;
-                values.put(name, 0);
-            }
-            values.put("itching", 1);
-//            values.put("vomiting", 1);
-//            values.put("yellowish_skin", 1);
-//			values.put("skin_peeling", 1);
-//			values.put("blackheads", 1);
-//			values.put("abdominal_pain", 1);
-//			values.put("yellowing_of_eyes", 1);
+            diseaseSymptomsService.getAllSymptoms().forEach(symptomHolder -> {
+                System.out.println(symptomHolder.getSymptom()+" "+symptomHolder.getType());
+            });
 
-
-            Object[] valuesMap = Arrays.stream(model.inputNames()).map(values::get).toArray();
-            Object[] results = model.predict(valuesMap);
-            String[] outputNames = model.outputNames();
-            String output = "Looks Fine";
-            Double max = 0d;
-            for (int i = 0; i < results.length; i++) {
-                if ((Double) results[i] > max) {
-                    max = (Double) results[i];
-                    output = outputNames[i].substring("probability(".length(), outputNames[i].length() - 1) + " = " + results[i];
-
+            PredictorService.DiseaseOutput diseaseOutput = diseasePredictorService.predictOutput(diseasePredictorService.convertToInput(List.of(
+                    "fatigue",
+                    "weight_loss",
+                    "restlessness",
+                    "lethargy",
+                    "excessive_hunger"
+//                    "increased_appetite"
+            )));
+            System.out.println(diseaseOutput.getOutputLabel() + " = " + diseaseOutput.getProbability());
+            Optional<CSVRecord> recordFromDisease = precautionService.getRecordFromDisease(diseaseOutput.getOutputLabel());
+            if(recordFromDisease.isPresent())
+            {
+                CSVRecord record = recordFromDisease.get();
+                System.out.println("Description: "+ record.get("Description"));
+                for(int i=0;i<4;i++){
+                    if(!record.get(i+2).isEmpty()) {
+                        System.out.println("Precaution"+(i+1)+" : "+record.get(i+2));
+                    }
                 }
             }
-            System.out.println(output);
-
+            else
+                System.out.println("No Description or Precautions found");
         };
 
 
