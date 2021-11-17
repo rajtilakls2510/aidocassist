@@ -497,7 +497,7 @@ Disease Page
 .disease-page {
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
+  row-gap: 0.7rem;
   align-items: center;
   padding-top: 0.8rem;
 }
@@ -516,6 +516,14 @@ Disease Page
   flex-direction: column;
   align-items: flex-start;
   row-gap: 1rem;
+  max-height: 0;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.symptom-select-section-show {
+  max-height: 50vh;
+  padding: 0.3rem 0;
 }
 
 .symptom-select-section h5 {
@@ -544,6 +552,30 @@ Disease Page
   padding: 0.15rem 0.6rem;
   border-radius: 15px;
   box-shadow: var(--shadow-1);
+  animation: symptom-show 0.3s linear;
+}
+
+@keyframes symptom-show {
+  0% {
+    max-width: 0;
+    overflow: hidden;
+  }
+  100% {
+    overflow: hidden;
+    max-width: 200px;
+  }
+}
+
+.remove-selected-item {
+  max-width: 0;
+  overflow: hidden;
+  animation: symptom-remove 0.3s linear;
+}
+
+@keyframes symptom-remove {
+  0% {
+    max-width: 200px;
+  }
 }
 
 .selected-single-symptom-container {
@@ -557,6 +589,8 @@ Disease Page
 .selected-single-symptom-container p {
   font-weight: 500;
   text-transform: capitalize;
+  white-space: nowrap;
+  text-overflow: none;
 }
 
 .selected-single-symptom-container svg:hover {
@@ -574,7 +608,6 @@ Disease Page
   flex-direction: column;
   row-gap: 1.5rem;
   align-items: center;
-  margin-top: 1rem;
 }
 
 .disease-prediction-container {
@@ -582,6 +615,30 @@ Disease Page
   display: flex;
   flex-direction: column;
   row-gap: 0.5rem;
+  max-height: 0;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.disease-prediction-container-show {
+  max-height: 500px;
+  margin-top: 1rem;
+}
+
+.pred-alert {
+  font-size: var(--small-text);
+  transition: var(--transition);
+  margin: 0;
+  max-height: 100px;
+  overflow-y: hidden;
+}
+.pred-alert-hide {
+  padding: 0;
+  max-height: 0;
+}
+
+.pred-alert:hover {
+  cursor: pointer;
 }
 
 .disease-pred-title {
@@ -672,10 +729,17 @@ Disease Page
     flex-direction: row;
     column-gap: 1.5rem;
     align-items: flex-start;
+    margin: 0;
   }
   .disease-prediction-container {
-    width: 50%;
+    max-width: 0;
+    overflow: hidden;
+    transition: var(--transition);
     order: 2;
+  }
+
+  .disease-prediction-container-show {
+    max-width: 35%;
   }
   .symptoms-container {
     width: 100%;

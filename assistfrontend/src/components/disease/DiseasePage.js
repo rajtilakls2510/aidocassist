@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FaTimes } from "react-icons/fa";
 import Api from "../../services/api";
 
@@ -8,6 +8,8 @@ const DiseasePage = () => {
   const [symptoms, setSymptoms] = useState([]);
   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
   const [predictedResults, setPredictedResults] = useState({});
+  const [lowPrediction, setLowPrediction] = useState(true);
+  const selectedSymptomRef = useRef([]);
   useEffect(() => {
     Api.getDiseaseSymptoms()
       .then((res) => {
@@ -36,14 +38,19 @@ const DiseasePage = () => {
   };
 
   const handleSelectedSymptomDelete = (symptom) => {
-    const symp = selectedSymptoms.find(
-      (symp) => symp.symptom === symptom.symptom
+    selectedSymptomRef.current[symptom.symptom].classList.add(
+      "remove-selected-item"
     );
-    if (!symptoms.find((symp) => symp.symptom === symptom.symptom))
-      setSymptoms([symp, ...symptoms]);
-    setSelectedSymptoms(
-      selectedSymptoms.filter((symptom) => symptom.symptom !== symp.symptom)
-    );
+    setTimeout(() => {
+      const symp = selectedSymptoms.find(
+        (symp) => symp.symptom === symptom.symptom
+      );
+      if (!symptoms.find((symp) => symp.symptom === symptom.symptom))
+        setSymptoms([symp, ...symptoms]);
+      setSelectedSymptoms(
+        selectedSymptoms.filter((symptom) => symptom.symptom !== symp.symptom)
+      );
+    }, 300);
   };
 
   const handlePredictClick = () => {
@@ -53,6 +60,8 @@ const DiseasePage = () => {
     Api.predictDisease(symptom_array)
       .then((res) => {
         setPredictedResults(res.data);
+        console.log(res.data);
+        setLowPrediction(res.data.probability < 0.6);
       })
       .catch((err) => {
         console.log(err.response);
@@ -73,51 +82,70 @@ const DiseasePage = () => {
         <h3 className="title">Disease Predictor</h3>
         <div className="title-underline"></div>
       </section>
-      {stage > 0 && (
-        <section className={`symptom-select-section `}>
-          <h5>Selected Symptoms: </h5>
-          <div className="symptom-predict">
-            <div className="selected-symptoms-container">
-              {selectedSymptoms.map((symptom) => {
-                return (
-                  <article
-                    key={symptom.symptom}
-                    className="selected-single-symptom"
-                  >
-                    <div className="selected-single-symptom-container">
-                      <p>{symptom.symptom.split("_").join(" ")}</p>
-                      <FaTimes
-                        onClick={() => handleSelectedSymptomDelete(symptom)}
-                      />
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-            <div className="predict-btn-container">
-              <button className="btn predict-btn" onClick={handlePredictClick}>
-                Predict
-              </button>
-            </div>
+      <section
+        className={`symptom-select-section ${
+          stage > 0 && "symptom-select-section-show"
+        }`}
+      >
+        <h5>Selected Symptoms: </h5>
+        <div className="symptom-predict">
+          <div className="selected-symptoms-container">
+            {selectedSymptoms.map((symptom) => {
+              return (
+                <article
+                  ref={(el) =>
+                    (selectedSymptomRef.current[symptom.symptom] = el)
+                  }
+                  key={symptom.symptom}
+                  className="selected-single-symptom"
+                >
+                  <div className="selected-single-symptom-container">
+                    <p>{symptom.symptom.split("_").join(" ")}</p>
+                    <FaTimes
+                      onClick={() => handleSelectedSymptomDelete(symptom)}
+                    />
+                  </div>
+                </article>
+              );
+            })}
           </div>
-        </section>
-      )}
+          <div className="predict-btn-container">
+            <button className="btn predict-btn" onClick={handlePredictClick}>
+              Predict
+            </button>
+          </div>
+        </div>
+      </section>
 
       <section className="symptom-pred-section">
-        {stage > 1 && (
-          <div className="disease-prediction-container">
-            <h5 className="disease-pred-title">Prediction Results: </h5>
-            <h5>
-              <span className="disease-field"> Disease: </span>
-              {predictedResults.disease}
-            </h5>
-            <p>
-              <span className="disease-field"> Surety: </span>
-              {Math.round(predictedResults.probability * 100)}%
-            </p>
+        <div
+          className={`disease-prediction-container ${
+            stage > 1 && "disease-prediction-container-show"
+          }`}
+        >
+          <h5 className="disease-pred-title">Prediction Results: </h5>
+          <h5>
+            <span className="disease-field"> Disease: </span>
+            {predictedResults.disease}
+          </h5>
+          <p>
+            <span className="disease-field"> Surety: </span>
+            {Math.round(predictedResults.probability * 100)}%
+          </p>
 
-            <h5 className="disease-field">Precautions: </h5>
-            {predictedResults.precautions.length === 0 ? (
+          <div
+            className={`alert alert-danger pred-alert ${
+              !lowPrediction && "pred-alert-hide"
+            }`}
+            onClick={() => setLowPrediction(false)}
+          >
+            The surety is too low. Do not trust this prediction! Kindly enter
+            more symptoms for better prediction.
+          </div>
+
+          <h5 className="disease-field">Precautions: </h5>
+          {predictedResults.precautions &&
+            (predictedResults.precautions.length === 0 ? (
               <p>No Precautions that we can suggest. Sorry!</p>
             ) : (
               <ul className="precautions-container">
@@ -129,13 +157,11 @@ const DiseasePage = () => {
                   );
                 })}
               </ul>
-            )}
-            <h5 className="disease-field">Disease Description: </h5>
-            <p className="disease-description">
-              {predictedResults.description}
-            </p>
-          </div>
-        )}
+            ))}
+          <h5 className="disease-field">Disease Description: </h5>
+          <p className="disease-description">{predictedResults.description}</p>
+        </div>
+
         <div className="symptoms-container">
           <h5 className="symptom-container-title">
             Please Select Your Symptoms:{" "}
