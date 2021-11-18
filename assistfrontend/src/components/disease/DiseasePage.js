@@ -30,6 +30,48 @@ const DiseasePage = () => {
         console.log(err.response);
       });
   }, []);
+  const searchSymptoms = () => {
+    if (searchText.length === 0) {
+      console.log("Empty Search");
+      let symptomsToBeAdded = [];
+      allSymptoms.forEach((symptom) => {
+        if (!selectedSymptoms.includes(symptom))
+          symptomsToBeAdded.push(symptom);
+      });
+      setContextSymptoms(symptomsToBeAdded);
+    } else if (searchText.length > 0 && searchText.length < 3) {
+      setContextSymptoms([]);
+    } else {
+      // Step1: Tokenize the search string such that each token is more than 2 characters
+      const searchTokens = searchText.split(/\W+/).filter((token) => {
+        token = token.toLowerCase();
+        return token.length > 2;
+      });
+      // Step2: For every token find the matching symptoms and add them to
+      //        contextSymptoms if this symptom is not present in either contextSymptoms or selectedSymptoms
+      if (searchTokens.length > 0) {
+        let matchedSymptoms = [];
+        searchTokens.forEach((currentToken) => {
+          const filteredSymptomsToken = allSymptoms.filter((symptom) =>
+            symptom.symptom.includes(currentToken)
+          );
+          filteredSymptomsToken.forEach((symptom) => {
+            if (!matchedSymptoms.includes(symptom))
+              matchedSymptoms.push(symptom);
+          });
+        });
+        let symptomsToBeAdded = [];
+        matchedSymptoms.forEach((symptom) => {
+          if (
+            !symptomsToBeAdded.includes(symptom) &&
+            !selectedSymptoms.includes(symptom)
+          )
+            symptomsToBeAdded.push(symptom);
+        });
+        setContextSymptoms(symptomsToBeAdded);
+      }
+    }
+  };
 
   const handleSymptomClick = (symptom) => {
     const symp = contextSymptoms.find(
@@ -53,8 +95,8 @@ const DiseasePage = () => {
       const symp = selectedSymptoms.find(
         (symp) => symp.symptom === symptom.symptom
       );
-      if (!contextSymptoms.find((symp) => symp.symptom === symptom.symptom))
-        setContextSymptoms([symp, ...contextSymptoms]);
+      // if (!contextSymptoms.find((symp) => symp.symptom === symptom.symptom))
+      //   setContextSymptoms([symp, ...contextSymptoms]);
       setSelectedSymptoms(
         selectedSymptoms.filter((symptom) => symptom.symptom !== symp.symptom)
       );
@@ -81,47 +123,8 @@ const DiseasePage = () => {
 
   // Search UseEffect
   useEffect(() => {
-    if (searchText.length === 0) {
-      allSymptoms.forEach((symptom) => {
-        if (!selectedSymptoms.includes(symptom))
-          setContextSymptoms([...contextSymptoms, symptom]);
-      });
-    } else if (searchText.length > 0 && searchText.length < 3) {
-      setContextSymptoms([]);
-    } else {
-      // Step1: Tokenize the search string such that each token is more than 2 characters
-      const searchTokens = searchText.split(/\W+/).filter((token) => {
-        token = token.toLowerCase();
-        return token.length > 2;
-      });
-      console.log(searchTokens);
-      // Step2: For every token find the matching symptoms and add them to
-      //        contextSymptoms if this symptom is not present in either contextSymptoms or selectedSymptoms
-      if (searchTokens.length > 0) {
-        let matchedSymptoms = [];
-        searchTokens.forEach((currentToken) => {
-          const filteredSymptomsToken = allSymptoms.filter((symptom) =>
-            symptom.symptom.includes(currentToken)
-          );
-          filteredSymptomsToken.forEach((symptom) => {
-            if (!matchedSymptoms.includes(symptom))
-              matchedSymptoms.push(symptom);
-          });
-        });
-        console.log(matchedSymptoms);
-        let symptomsToBeAdded = [];
-        matchedSymptoms.forEach((symptom) => {
-          if (
-            !symptomsToBeAdded.includes(symptom) &&
-            !selectedSymptoms.includes(symptom)
-          )
-            symptomsToBeAdded.push(symptom);
-        });
-        console.log(symptomsToBeAdded);
-        setContextSymptoms(symptomsToBeAdded);
-      }
-    }
-  }, [searchText]);
+    searchSymptoms();
+  }, [searchText, selectedSymptoms]);
 
   useEffect(() => {
     if (selectedSymptoms.length === 0 && stage > 0) setStage(0);
