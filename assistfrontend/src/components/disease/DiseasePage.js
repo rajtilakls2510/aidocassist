@@ -5,7 +5,9 @@ import Api from "../../services/api";
 const DiseasePage = () => {
   const [stage, setStage] = useState(0);
   const [symptomTypes, setSymptomTypes] = useState([]);
-  const [symptoms, setSymptoms] = useState([]);
+  const [allSymptoms, setallSymptoms] = useState([]);
+  const [contextSymptoms, setContextSymptoms] = useState([]);
+  const [searchText, setSearchText] = useState("");
   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
   const [predictedResults, setPredictedResults] = useState({});
   const [lowPrediction, setLowPrediction] = useState(true);
@@ -13,7 +15,8 @@ const DiseasePage = () => {
   useEffect(() => {
     Api.getDiseaseSymptoms()
       .then((res) => {
-        setSymptoms(res.data);
+        setallSymptoms(res.data);
+        setContextSymptoms(res.data);
         let symptom_types = new Set();
         res.data.reduce(function (acc, currItem) {
           acc.add(currItem.type);
@@ -29,9 +32,13 @@ const DiseasePage = () => {
   }, []);
 
   const handleSymptomClick = (symptom) => {
-    const symp = symptoms.find((symp) => symp.symptom === symptom.symptom);
+    const symp = contextSymptoms.find(
+      (symp) => symp.symptom === symptom.symptom
+    );
 
-    setSymptoms(symptoms.filter((symptom) => symptom.symptom !== symp.symptom));
+    setContextSymptoms(
+      contextSymptoms.filter((symptom) => symptom.symptom !== symp.symptom)
+    );
     setSelectedSymptoms([...selectedSymptoms, symp]);
 
     if (stage < 1) setStage(1);
@@ -41,12 +48,13 @@ const DiseasePage = () => {
     selectedSymptomRef.current[symptom.symptom].classList.add(
       "remove-selected-item"
     );
+    // Setting timeout so that the remove animation can finish within 300ms
     setTimeout(() => {
       const symp = selectedSymptoms.find(
         (symp) => symp.symptom === symptom.symptom
       );
-      if (!symptoms.find((symp) => symp.symptom === symptom.symptom))
-        setSymptoms([symp, ...symptoms]);
+      if (!contextSymptoms.find((symp) => symp.symptom === symptom.symptom))
+        setContextSymptoms([symp, ...contextSymptoms]);
       setSelectedSymptoms(
         selectedSymptoms.filter((symptom) => symptom.symptom !== symp.symptom)
       );
@@ -71,6 +79,50 @@ const DiseasePage = () => {
       });
   };
 
+  // Search UseEffect
+  useEffect(() => {
+    if (searchText.length === 0) {
+      allSymptoms.forEach((symptom) => {
+        if (!selectedSymptoms.includes(symptom))
+          setContextSymptoms([...contextSymptoms, symptom]);
+      });
+    } else if (searchText.length > 0 && searchText.length < 3) {
+      setContextSymptoms([]);
+    } else {
+      // Step1: Tokenize the search string such that each token is more than 2 characters
+      const searchTokens = searchText.split(/\W+/).filter((token) => {
+        token = token.toLowerCase();
+        return token.length > 2;
+      });
+      console.log(searchTokens);
+      // Step2: For every token find the matching symptoms and add them to
+      //        contextSymptoms if this symptom is not present in either contextSymptoms or selectedSymptoms
+      if (searchTokens.length > 0) {
+        let matchedSymptoms = [];
+        searchTokens.forEach((currentToken) => {
+          const filteredSymptomsToken = allSymptoms.filter((symptom) =>
+            symptom.symptom.includes(currentToken)
+          );
+          filteredSymptomsToken.forEach((symptom) => {
+            if (!matchedSymptoms.includes(symptom))
+              matchedSymptoms.push(symptom);
+          });
+        });
+        console.log(matchedSymptoms);
+        let symptomsToBeAdded = [];
+        matchedSymptoms.forEach((symptom) => {
+          if (
+            !symptomsToBeAdded.includes(symptom) &&
+            !selectedSymptoms.includes(symptom)
+          )
+            symptomsToBeAdded.push(symptom);
+        });
+        console.log(symptomsToBeAdded);
+        setContextSymptoms(symptomsToBeAdded);
+      }
+    }
+  }, [searchText]);
+
   useEffect(() => {
     if (selectedSymptoms.length === 0 && stage > 0) setStage(0);
     if (selectedSymptoms.length > 0 && stage < 1) setStage(1);
@@ -82,6 +134,7 @@ const DiseasePage = () => {
         <h3 className="title">Disease Predictor</h3>
         <div className="title-underline"></div>
       </section>
+      {/* ============================= Symptom Selection Section =======================  */}
       <section
         className={`symptom-select-section ${
           stage > 0 && "symptom-select-section-show"
@@ -117,6 +170,7 @@ const DiseasePage = () => {
         </div>
       </section>
 
+      {/* ============================= Prediction Section =======================  */}
       <section className="symptom-pred-section">
         <div
           className={`disease-prediction-container ${
@@ -162,16 +216,25 @@ const DiseasePage = () => {
           <p className="disease-description">{predictedResults.description}</p>
         </div>
 
+        {/* ============================= All Symptoms Container =======================  */}
+
         <div className="symptoms-container">
           <h5 className="symptom-container-title">
             Please Select Your Symptoms:{" "}
           </h5>
+          <input
+            type="text"
+            className="symptom-search"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            placeholder="Search Symptoms"
+          />
           {symptomTypes.map((type) => {
             return (
               <>
                 <h5>{type} Symptoms</h5>
                 <div className="symptom-type-container">
-                  {symptoms
+                  {contextSymptoms
                     .filter((symptom) => {
                       return symptom.type === type;
                     })

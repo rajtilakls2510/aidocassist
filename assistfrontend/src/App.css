@@ -629,12 +629,12 @@ Disease Page
   font-size: var(--small-text);
   transition: var(--transition);
   margin: 0;
-  max-height: 100px;
-  overflow-y: hidden;
+  max-height: 200px;
 }
 .pred-alert-hide {
   padding: 0;
   max-height: 0;
+  overflow-y: hidden;
 }
 
 .pred-alert:hover {
@@ -678,6 +678,23 @@ Disease Page
 
 .symptom-container-title {
   font-weight: 700;
+}
+
+.symptom-search {
+  padding: 0.5rem;
+  border-radius: var(--borderRadius);
+  border: 2px solid var(--secondary-500);
+  color: var(--secondary-700);
+  font-weight: 500;
+  transition: var(--transition);
+}
+.symptom-search::placeholder {
+  color: var(--secondary-500);
+}
+
+.symptom-search:focus {
+  border: 2px solid var(--secondary-600);
+  outline: none;
 }
 
 .symptom-type-container {
