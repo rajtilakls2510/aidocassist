@@ -552,29 +552,40 @@ Disease Page
   padding: 0.15rem 0.6rem;
   border-radius: 15px;
   box-shadow: var(--shadow-1);
-  animation: symptom-show 0.3s linear;
+  transform-origin: 0 50%;
+  animation: selected-symptom-show 0.2s cubic-bezier(0.57, 0.8, 0.75, 1.02);
 }
 
-@keyframes symptom-show {
+@keyframes selected-symptom-show {
   0% {
-    max-width: 0;
-    overflow: hidden;
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  80% {
+    opacity: 1;
   }
   100% {
-    overflow: hidden;
-    max-width: 200px;
+    transform: scaleX(1);
   }
 }
 
 .remove-selected-item {
-  max-width: 0;
-  overflow: hidden;
-  animation: symptom-remove 0.3s linear;
+  opacity: 0;
+  transform-origin: 0 50%;
+  animation: selected-symptom-remove 0.2s cubic-bezier(0.34, 0.58, 0.62, 0.83);
 }
 
-@keyframes symptom-remove {
+@keyframes selected-symptom-remove {
   0% {
-    max-width: 200px;
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(0);
+    opacity: 0;
   }
 }
 
@@ -712,7 +723,9 @@ Disease Page
   border-radius: var(--borderRadius);
   box-shadow: var(--shadow-1);
   border: 1px solid var(--primary-200);
-  transition: var(--transition);
+  width: max-content;
+  transition-property: background, color, border, box-shadow;
+  transition: 0.3s ease-in-out;
 }
 
 .single-symptom p {
