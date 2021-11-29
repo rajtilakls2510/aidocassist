@@ -1,6 +1,9 @@
 from app import application as app
 from app.diseasepredictor import *
 from flask import jsonify, request
+import numpy as np
+import shap
+
 
 REQUESTMAPPING="/disease"
 
@@ -28,10 +31,18 @@ def predictDisease():
                 pred_prob = prob
     except:
         return "There might be some invalid input", 500
+    shap.initjs()
+    model_shap = model_explainer.shap_values(input_symptoms)
+    class_index = np.where(model.classes_==pred_disease)[0][0]
+    force_plot = shap.force_plot(model_explainer.expected_value[class_index], model_shap[class_index],
+                                  input_symptoms.iloc[0], out_names=pred_disease, contribution_threshold=0.03)
+    shap_html = f"<head>{shap.getjs()}</head><body>{force_plot.html()}</body>"
+    # except:
+    #     return jsonify({"disease":pred_disease, "probability":pred_prob, "description": "", "precautions":[], "force_plot":""}),200
     try:
         desc_prec = disease_desc_prec[disease_desc_prec['Disease']==pred_disease]
         disease_description = desc_prec["Description"].values[0]
         disease_precautions=desc_prec.iloc[0, 2:].values.tolist()
     except:
-       return jsonify({"disease":pred_disease, "probability":pred_prob, "description": "", "precautions":[]}), 200
-    return jsonify({"disease":pred_disease, "probability":pred_prob, "description": disease_description, "precautions": disease_precautions}), 200
+       return jsonify({"disease":pred_disease, "probability":pred_prob, "description": "", "precautions":[], "force_plot":shap_html}), 200
+    return jsonify({"disease":pred_disease, "probability":pred_prob, "description": disease_description, "precautions": disease_precautions, "force_plot":shap_html}), 200

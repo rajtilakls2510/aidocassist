@@ -12,6 +12,7 @@ const DiseasePage = () => {
   const [predictedResults, setPredictedResults] = useState({});
   const [lowPrediction, setLowPrediction] = useState(true);
   const selectedSymptomRef = useRef([]);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     Api.getDiseaseSymptoms()
       .then((res) => {
@@ -105,6 +106,7 @@ const DiseasePage = () => {
     const symptom_array = {
       symptoms: selectedSymptoms.map((symptom) => symptom.symptom),
     };
+    setLoading(true);
     Api.predictDisease(symptom_array)
       .then((res) => {
         setPredictedResults(res.data);
@@ -116,6 +118,7 @@ const DiseasePage = () => {
       })
       .finally(() => {
         if (stage < 2) setStage(2);
+        setLoading(false);
       });
   };
 
@@ -164,9 +167,14 @@ const DiseasePage = () => {
             })}
           </div>
           <div className="predict-btn-container">
-            <button className="btn predict-btn" onClick={handlePredictClick}>
+            <button
+              className="btn predict-btn"
+              onClick={handlePredictClick}
+              disabled={loading}
+            >
               Predict
             </button>
+            {loading && <div className="loading disease-pred-loading"></div>}
           </div>
         </div>
       </section>
@@ -197,6 +205,10 @@ const DiseasePage = () => {
             The confidence is too low. Do not trust this prediction! Kindly
             enter more symptoms for better prediction.
           </div>
+          <iframe
+            srcdoc={`<html>${predictedResults.force_plot}</html>`}
+            frameborder="0"
+          ></iframe>
 
           <h5 className="disease-field">Precautions: </h5>
           {predictedResults.precautions &&

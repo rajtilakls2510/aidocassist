@@ -237,22 +237,25 @@ ul {
 /* alert */
 
 @keyframes spinner {
+  from {
+    transform: rotate(0deg);
+  }
   to {
     transform: rotate(360deg);
   }
 }
 
 .loading {
-  width: 3rem;
-  height: 3rem;
-  border: 5px solid var(--grey-400);
+  width: 2rem;
+  height: 2rem;
+  border: 4px solid var(--grey-400);
   border-radius: 50%;
   border-top-color: var(--primary-500);
   animation: spinner 0.6s linear infinite;
 }
-.loading {
+/* .loading {
   margin: 0 auto;
-}
+} */
 /* title */
 
 .title {
@@ -607,12 +610,29 @@ Disease Page
 .selected-single-symptom-container svg:hover {
   cursor: pointer;
 }
+.predict-btn-container {
+  position: relative;
+}
 
 .predict-btn {
   width: 100%;
   padding: 0.5rem;
 }
 
+.predict-btn:disabled {
+  background: var(--grey-300);
+  color: var(--grey-700);
+  box-shadow: none;
+}
+.predict-btn:hover {
+  box-shadow: none;
+}
+
+.disease-pred-loading {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
 .symptom-pred-section {
   width: 100%;
   display: flex;
@@ -626,14 +646,17 @@ Disease Page
   display: flex;
   flex-direction: column;
   row-gap: 0.5rem;
-  max-height: 0;
+  transform-origin: 50% 100%;
+  height: 0;
+  transform: scaleY(0);
   overflow: hidden;
   transition: var(--transition);
 }
 
 .disease-prediction-container-show {
-  max-height: 500px;
+  transform: scaleY(1);
   margin-top: 1rem;
+  height: max-content;
 }
 
 .pred-alert {
@@ -762,14 +785,17 @@ Disease Page
     margin: 0;
   }
   .disease-prediction-container {
-    max-width: 0;
+    width: 0;
     overflow: hidden;
+    transform: scaleX(0);
+    transform-origin: 100% 100%;
     transition: var(--transition);
     order: 2;
   }
 
   .disease-prediction-container-show {
-    max-width: 35%;
+    width: max-content;
+    transform: scaleX(1);
   }
   .symptoms-container {
     width: 100%;
