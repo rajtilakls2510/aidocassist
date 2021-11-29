@@ -186,7 +186,7 @@ const DiseasePage = () => {
             {predictedResults.disease}
           </h5>
           <p>
-            <span className="disease-field"> Surety: </span>
+            <span className="disease-field"> Confidence: </span>
             {Math.round(predictedResults.probability * 100)}%
           </p>
 
@@ -196,8 +196,8 @@ const DiseasePage = () => {
             }`}
             onClick={() => setLowPrediction(false)}
           >
-            The surety is too low. Do not trust this prediction! Kindly enter
-            more symptoms for better prediction.
+            The confidence is too low. Do not trust this prediction! Kindly
+            enter more symptoms for better prediction.
           </div>
 
           <h5 className="disease-field">Precautions: </h5>

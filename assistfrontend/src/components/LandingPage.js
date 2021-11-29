@@ -41,8 +41,8 @@ const LandingPage = () => {
             <div className="service-img-overlay"></div>
           </div>
           <div className="service-details-container">
-            <h3>Bone Fracture Detector</h3>
-            <p>Detect the fracture in your X-Ray</p>
+            <h3>Hand Fracture Detector</h3>
+            <p>Detect the fracture in your arms' X-Ray</p>
           </div>
         </div>
         {/* End of Service Card */}
