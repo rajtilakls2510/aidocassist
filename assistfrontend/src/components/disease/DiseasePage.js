@@ -32,7 +32,6 @@ const DiseasePage = () => {
   }, []);
   const searchSymptoms = () => {
     if (searchText.length === 0) {
-      console.log("Empty Search");
       let symptomsToBeAdded = [];
       allSymptoms.forEach((symptom) => {
         if (!selectedSymptoms.includes(symptom))
@@ -43,17 +42,16 @@ const DiseasePage = () => {
       setContextSymptoms([]);
     } else {
       // Step1: Tokenize the search string such that each token is more than 2 characters
-      const searchTokens = searchText.split(/\W+/).filter((token) => {
-        token = token.toLowerCase();
-        return token.length > 2;
-      });
+      const searchTokens = searchText
+        .split(/\W+/)
+        .filter((token) => token.length > 2);
       // Step2: For every token find the matching symptoms and add them to
       //        contextSymptoms if this symptom is not present in either contextSymptoms or selectedSymptoms
       if (searchTokens.length > 0) {
         let matchedSymptoms = [];
         searchTokens.forEach((currentToken) => {
           const filteredSymptomsToken = allSymptoms.filter((symptom) =>
-            symptom.symptom.includes(currentToken)
+            symptom.symptom.includes(currentToken.toLowerCase())
           );
           filteredSymptomsToken.forEach((symptom) => {
             if (!matchedSymptoms.includes(symptom))
