@@ -1,1 +1,0 @@
-web: gunicorn --chdir ./AssistFlaskBackend application:application
