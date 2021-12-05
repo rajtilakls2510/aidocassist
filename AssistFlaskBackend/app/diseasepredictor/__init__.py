@@ -2,6 +2,7 @@ import pickle
 import shap
 import pandas as pd
 
+# Loading models and other dependencies
 model = pickle.load(open("resources/diseasepredictor/RFClassifier2.pkl","rb") )
 disease_desc_prec = pd.read_csv("resources/diseasepredictor/Disease_desc_prec.csv")
 symptom_severity = pd.read_csv("resources/diseasepredictor/New_symptom_severity.csv")

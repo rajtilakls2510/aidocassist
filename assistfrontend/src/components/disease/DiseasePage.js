@@ -4,12 +4,24 @@ import Api from "../../services/api";
 import DiseaseExplainModal from "./DiseaseExplainModal";
 
 const DiseasePage = () => {
+  // States
   const [stage, setStage] = useState(0);
+  // Stage 0: Initial Stage of the page when no symptoms are selected
+  // Stage 1: When there are symptoms selected by the user
+  // Stage 2: When there is a prediction result
   const [symptomTypes, setSymptomTypes] = useState([]);
+
+  // allSymptoms: Stores all the available symptoms
   const [allSymptoms, setallSymptoms] = useState([]);
+
+  // contextSymptoms: Stores all the symptoms that need to be shown to the user
   const [contextSymptoms, setContextSymptoms] = useState([]);
   const [searchText, setSearchText] = useState("");
+
+  // selectedSymptoms: Stores all the symptoms that are selected by the user
   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
+
+  // predictedResults: Stores the prediction results after the prediction has been retrieved from the backend
   const [predictedResults, setPredictedResults] = useState({
     disease: "",
     probability: "",
@@ -20,8 +32,13 @@ const DiseasePage = () => {
   const [lowPrediction, setLowPrediction] = useState(true);
   const selectedSymptomRef = useRef([]);
   const [loading, setLoading] = useState(false);
+
+  // reasonModalOpen: Stores whether the explanation modal for the prediction is open or not
   const [reasonModalOpen, setReasonModalOpen] = useState(false);
+
+  // Use Effects
   useEffect(() => {
+    // Retrieving all available symptoms
     Api.getDiseaseSymptoms()
       .then((res) => {
         setallSymptoms(res.data);
@@ -39,7 +56,22 @@ const DiseasePage = () => {
         console.log(err.response);
       });
   }, []);
+
+  // Search UseEffect
+  useEffect(() => {
+    // Searching from symptoms using the search text
+    searchSymptoms();
+  }, [searchText, selectedSymptoms]);
+
+  useEffect(() => {
+    // Handling the stage changes of the page
+    if (selectedSymptoms.length === 0 && stage > 0) setStage(0);
+    if (selectedSymptoms.length > 0 && stage < 1) setStage(1);
+  }, [selectedSymptoms]);
+
   const searchSymptoms = () => {
+    // Searches for symptoms using the search text
+
     if (searchText.length === 0) {
       let symptomsToBeAdded = [];
       allSymptoms.forEach((symptom) => {
@@ -81,6 +113,8 @@ const DiseasePage = () => {
   };
 
   const handleSymptomClick = (symptom) => {
+    // Handles what happens when a user clicks on a symptom to select
+
     const symp = contextSymptoms.find(
       (symp) => symp.symptom === symptom.symptom
     );
@@ -94,6 +128,8 @@ const DiseasePage = () => {
   };
 
   const handleSelectedSymptomDelete = (symptom) => {
+    // Handles the deletion of a selected symptom
+
     selectedSymptomRef.current[symptom.symptom].classList.add(
       "remove-selected-item"
     );
@@ -102,8 +138,7 @@ const DiseasePage = () => {
       const symp = selectedSymptoms.find(
         (symp) => symp.symptom === symptom.symptom
       );
-      // if (!contextSymptoms.find((symp) => symp.symptom === symptom.symptom))
-      //   setContextSymptoms([symp, ...contextSymptoms]);
+
       setSelectedSymptoms(
         selectedSymptoms.filter((symptom) => symptom.symptom !== symp.symptom)
       );
@@ -111,6 +146,8 @@ const DiseasePage = () => {
   };
 
   const handlePredictClick = () => {
+    // Retrives the prediction results of the selected symptoms
+
     const symptom_array = {
       symptoms: selectedSymptoms.map((symptom) => symptom.symptom),
     };
@@ -129,16 +166,6 @@ const DiseasePage = () => {
         setLoading(false);
       });
   };
-
-  // Search UseEffect
-  useEffect(() => {
-    searchSymptoms();
-  }, [searchText, selectedSymptoms]);
-
-  useEffect(() => {
-    if (selectedSymptoms.length === 0 && stage > 0) setStage(0);
-    if (selectedSymptoms.length > 0 && stage < 1) setStage(1);
-  }, [selectedSymptoms]);
 
   return (
     <main className="page disease-page">
@@ -302,6 +329,8 @@ const DiseasePage = () => {
           })}
         </div>
       </section>
+
+      {/* ===================== Modal to display the explanation of the predicted results ============ */}
       <DiseaseExplainModal
         show={reasonModalOpen}
         predictedResults={predictedResults}

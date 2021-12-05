@@ -15,6 +15,7 @@ export default function DiseaseExplainModal({
       <article className="modal-card disease-modal-card">
         <h3>Prediction and Explanation</h3>
         <div className="disease-explanation-content">
+          {/* ======================== Force Plot for the predicted results ================== */}
           <div className="disease-modal-iframe-container">
             <iframe
               srcDoc={`<html>${predictedResults.force_plot}</html>`}
@@ -25,6 +26,7 @@ export default function DiseaseExplainModal({
             <p>Force Plot: Contribution of Symptoms to the Predicted Disease</p>
           </div>
 
+          {/* ============== Disease, Confidence and Explanation for the predicted results ================== */}
           <h4 className="disease-pred-title">Prediction:</h4>
           <div className="disease-modal-pred-container">
             <h5>
@@ -65,6 +67,8 @@ export default function DiseaseExplainModal({
                 </ul>
               ))}
           </div>
+
+          {/* ======================== Shapley values for the predicted results ================== */}
           <h4 className="disease-pred-title">Shapley Values for Symptoms:</h4>
           <div className="disease-modal-expl-container">
             <p>
