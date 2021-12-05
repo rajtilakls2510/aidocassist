@@ -1,0 +1,6 @@
+Go to https://drive.google.com/drive/folders/1kUsuC9PGrbO3D6hr10gGXehkZ5tfwglo and download the following files:
+- Disease_desc_prec.csv
+- New_symptom_severity.csv
+- RFClassifier2.pkl
+- RFTrain2.pkl
+- sample_data.csv

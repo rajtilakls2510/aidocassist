@@ -1,1 +1,5 @@
 resources/diseasepredictor/RFTrain2.pkl
+resources/diseasepredictor/Disease_desc_prec.csv
+resources/diseasepredictor/New_symptom_severity.csv
+resources/diseasepredictor/RFClassifier2.pkl
+resources/diseasepredictor/sample_data.csv
