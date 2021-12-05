@@ -6,6 +6,7 @@ import shap
 
 
 REQUESTMAPPING="/disease"
+CONTRIB_THRESH=0.05
 
 @app.route(REQUESTMAPPING, methods=["GET"])
 def get_symptoms():
@@ -17,10 +18,10 @@ def get_symptoms():
 @app.route(REQUESTMAPPING+"/predict", methods=['POST'])
 def predictDisease():
     try:
-        input_symptoms = request.get_json()['symptoms']
+        input_symptoms_raw = request.get_json()['symptoms']
         input_symptom_dictionary = {}
         for column in sample_data.columns[:-1]:
-            input_symptom_dictionary[column]= [1 if column in input_symptoms else 0]
+            input_symptom_dictionary[column]= [1 if column in input_symptoms_raw else 0]
 
         input_symptoms = pd.DataFrame(input_symptom_dictionary)
         pred_disease, pred_prob = "",0
@@ -31,18 +32,25 @@ def predictDisease():
                 pred_prob = prob
     except:
         return "There might be some invalid input", 500
-    shap.initjs()
-    model_shap = model_explainer.shap_values(input_symptoms)
-    class_index = np.where(model.classes_==pred_disease)[0][0]
-    force_plot = shap.force_plot(model_explainer.expected_value[class_index], model_shap[class_index],
-                                  input_symptoms.iloc[0], out_names=pred_disease, contribution_threshold=0.03)
-    shap_html = f"<head>{shap.getjs()}</head><body>{force_plot.html()}</body>"
-    # except:
-    #     return jsonify({"disease":pred_disease, "probability":pred_prob, "description": "", "precautions":[], "force_plot":""}),200
+    try:
+        shap.initjs()
+        model_shap = model_explainer.shap_values(input_symptoms)
+        class_index = np.where(model.classes_==pred_disease)[0][0]
+        force_plot = shap.force_plot(model_explainer.expected_value[class_index], model_shap[class_index],
+                                      input_symptoms.iloc[0], out_names=pred_disease, contribution_threshold=CONTRIB_THRESH)
+        shap_html = f"<head>{shap.getjs()}</head><body>{force_plot.html()}</body>"
+
+        input_symptom_shap_values=[]
+        for shap_value, feature in zip(model_shap[class_index][0], model_explainer.data_feature_names):
+            input_symptom_shap_values.append({"symptom": feature, "shap": shap_value, "present": feature in input_symptoms_raw})
+
+        input_symptom_shap_values.sort(key= lambda symptom: abs(symptom["shap"]), reverse=True)
+    except:
+        return jsonify({"disease":pred_disease, "probability":pred_prob, "description": "", "precautions":[], "force_plot":"", "shap_values": [], "contribution_threshold": CONTRIB_THRESH}),200
     try:
         desc_prec = disease_desc_prec[disease_desc_prec['Disease']==pred_disease]
         disease_description = desc_prec["Description"].values[0]
         disease_precautions=desc_prec.iloc[0, 2:].values.tolist()
     except:
        return jsonify({"disease":pred_disease, "probability":pred_prob, "description": "", "precautions":[], "force_plot":shap_html}), 200
-    return jsonify({"disease":pred_disease, "probability":pred_prob, "description": disease_description, "precautions": disease_precautions, "force_plot":shap_html}), 200
+    return jsonify({"disease":pred_disease, "probability":pred_prob, "description": disease_description, "precautions": disease_precautions, "force_plot":shap_html, "shap_values": input_symptom_shap_values, "contribution_threshold": CONTRIB_THRESH}), 200

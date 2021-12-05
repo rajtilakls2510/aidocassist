@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaTimes } from "react-icons/fa";
 import Api from "../../services/api";
+import DiseaseExplainModal from "./DiseaseExplainModal";
 
 const DiseasePage = () => {
   const [stage, setStage] = useState(0);
@@ -9,10 +10,17 @@ const DiseasePage = () => {
   const [contextSymptoms, setContextSymptoms] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
-  const [predictedResults, setPredictedResults] = useState({});
+  const [predictedResults, setPredictedResults] = useState({
+    disease: "",
+    probability: "",
+    precautions: [],
+    force_plot: "",
+    shap_values: [],
+  });
   const [lowPrediction, setLowPrediction] = useState(true);
   const selectedSymptomRef = useRef([]);
   const [loading, setLoading] = useState(false);
+  const [reasonModalOpen, setReasonModalOpen] = useState(false);
   useEffect(() => {
     Api.getDiseaseSymptoms()
       .then((res) => {
@@ -110,7 +118,7 @@ const DiseasePage = () => {
     Api.predictDisease(symptom_array)
       .then((res) => {
         setPredictedResults(res.data);
-        // console.log(res.data);
+        console.log(res.data);
         setLowPrediction(res.data.probability < 0.6);
       })
       .catch((err) => {
@@ -205,10 +213,36 @@ const DiseasePage = () => {
             The confidence is too low. Do not trust this prediction! Kindly
             enter more symptoms for better prediction.
           </div>
-          <iframe
-            srcdoc={`<html>${predictedResults.force_plot}</html>`}
-            frameborder="0"
-          ></iframe>
+
+          <div className="disease-reason-header">
+            <h5 className="disease-field">Brief Reason: </h5>
+            <button
+              className="btn btn-hipster"
+              onClick={() => setReasonModalOpen(true)}
+            >
+              View Explanation
+            </button>
+          </div>
+          {predictedResults.shap_values &&
+            (predictedResults.shap_values.length === 0 ? (
+              <p>No Explanation found. Sorry!</p>
+            ) : (
+              <ul className="precautions-container">
+                {predictedResults.shap_values
+                  .filter(
+                    (symptom) =>
+                      symptom.shap > predictedResults.contribution_threshold &&
+                      symptom.present === true
+                  )
+                  .map((symptom) => {
+                    return (
+                      <li key={symptom.symptom} className="single-precaution">
+                        Presence of {symptom.symptom.split("_").join(" ")}
+                      </li>
+                    );
+                  })}
+              </ul>
+            ))}
 
           <h5 className="disease-field">Precautions: </h5>
           {predictedResults.precautions &&
@@ -268,6 +302,11 @@ const DiseasePage = () => {
           })}
         </div>
       </section>
+      <DiseaseExplainModal
+        show={reasonModalOpen}
+        predictedResults={predictedResults}
+        onClose={() => setReasonModalOpen(false)}
+      />
     </main>
   );
 };
