@@ -175,6 +175,10 @@ ul {
   width: 100%;
 }
 
+.link {
+  font-weight: 700;
+}
+
 /* alerts */
 .alert {
   padding: 0.375rem 0.75rem;

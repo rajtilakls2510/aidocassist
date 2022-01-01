@@ -24,6 +24,19 @@ export default function DiseaseExplainModal({
               title="Force Plot"
             ></iframe>
             <p>Force Plot: Contribution of Symptoms to the Predicted Disease</p>
+            <small>
+              How to read the plot? <br /> The features present in Red colour
+              are the ones who contributed towards the prediction of the disease
+              where as the features in Blue colour contributed against the
+              prediction. The amount of contribution towards/against the
+              prediction is received from the length of the red or blue arrows.
+              The highest contribution features are labelled with their names
+              and their presence/absence. For example, "Itching = 1" in Red
+              means that the presense of itching contributed towards the
+              prediction. Another example, "Joint pain = 0" in Red means that
+              the absence of joint pain contributed against the prediction. For
+              actual numbers, refer to the contribution table presented later.
+            </small>
           </div>
 
           {/* ============== Disease, Confidence and Explanation for the predicted results ================== */}
@@ -43,8 +56,11 @@ export default function DiseaseExplainModal({
             <p>
               The predicted disease is {predictedResults.disease} with{" "}
               {Math.round(predictedResults.probability * 100)}% confidence. It
-              was predicted due to the presence or absence of the following
-              symptoms:
+              was predicted <b>mainly</b> due to the presence or absence of the
+              following symptoms :{" "}
+              <small>
+                (follow the bottom table for detailed contributions)
+              </small>
             </p>
             {predictedResults.shap_values &&
               (predictedResults.shap_values.length === 0 ? (
@@ -69,42 +85,51 @@ export default function DiseaseExplainModal({
           </div>
 
           {/* ======================== Shapley values for the predicted results ================== */}
-          <h4 className="disease-pred-title">Shapley Values for Symptoms:</h4>
+          <h4 className="disease-pred-title">Contribution of Symptoms:</h4>
           <div className="disease-modal-expl-container">
             <p>
-              <b>Shapley values</b> are used to measure the <b>contribution</b>{" "}
-              of each feature to the prediction of a Machine Learning model. The
-              more <b>positive</b> is the shapley value for a feature, the more
-              it contributed towards the <b>positivity</b> of the prediction.
-              The more <b>negative</b> is the shapley value for a feature, the
-              more it contributed towards the <b>negativity</b> of the
-              prediction. Refer to the above graph for Graphical Representation.
-              Given below are the shapley values for each of the symptoms:
+              Contribution of the symptoms towards the prediction of{" "}
+              <b>{predictedResults.disease}:</b>{" "}
+              <small>(see the above graph for a visual representation)</small>
             </p>
+            <small>
+              <b>***</b> The contributions were calculated using{" "}
+              <a
+                className="link"
+                href="https://www.analyticsvidhya.com/blog/2019/11/shapley-value-machine-learning-interpretability-game-theory/"
+              >
+                Shapley Values
+              </a>
+              . A <b>positive contribution</b> suggests that the symptom
+              contributed some percentage towards the <b>higher value</b> of the
+              confidence where as <b>negative contribution</b> suggests that the
+              symptom contributed towards the <b>lower value</b> of the
+              confidence
+            </small>
             {predictedResults.shap_values.length > 0 ? (
               <table className="etable">
                 <thead>
                   <tr className="etable-row etable-header-row">
                     <th>Symptom</th>
-                    <th>Shapley Value</th>
+                    <th>Contribution</th>
                     <th>Present/Absent</th>
                   </tr>
                 </thead>
                 <tbody>
                   {predictedResults.shap_values.map((symptom) => {
-                    return (
+                    return symptom.shap !== 0 ? (
                       <tr className="etable-row" key={symptom.symptom}>
                         <td>
                           <p>{symptom.symptom.split("_").join(" ")}</p>
                         </td>
                         <td>
-                          <p>{symptom.shap}</p>
+                          <p>{Math.round(symptom.shap * 10000) / 100} %</p>
                         </td>
                         <td>
                           <p>{symptom.present ? "PRESENT" : "ABSENT"}</p>
                         </td>
                       </tr>
-                    );
+                    ) : null;
                   })}
                 </tbody>
               </table>
