@@ -3,8 +3,7 @@ import { useHistory } from "react-router";
 import DiseaseImg from "../images/disease.jpg";
 import BoneFractureImg from "../images/bone_fracture.jpg";
 import CovidImg from "../images/covid.jpg";
-import PneumoniaImg from "../images/pneumonia.jpg";
-import DiabetesImg from "../images/diabetes.jpg";
+import BreastImg from "../images/breast_cancer.png";
 
 const LandingPage = () => {
   const history = useHistory();
@@ -30,12 +29,12 @@ const LandingPage = () => {
         {/* Service Card */}
         <div
           className="service-card"
-          onClick={() => history.push("/disease-predictor")}
+          onClick={() => history.push("/hand-fracture-detector")}
         >
           <div className="service-img-container">
             <img
               src={BoneFractureImg}
-              alt="Bone Fracture"
+              alt="Hand Fracture"
               className="service-img"
             />
             <div className="service-img-overlay"></div>
@@ -49,45 +48,30 @@ const LandingPage = () => {
         {/* Service Card */}
         <div
           className="service-card"
-          onClick={() => history.push("/disease-predictor")}
+          onClick={() => history.push("/covid19-pneumonia-predictor")}
         >
           <div className="service-img-container">
             <img src={CovidImg} alt="Covid" className="service-img" />
             <div className="service-img-overlay"></div>
           </div>
           <div className="service-details-container">
-            <h3>Covid-19 Predictor</h3>
-            <p>Predict whether you have Covid-19</p>
+            <h3>Covid-19 Pneumonia Predictor</h3>
+            <p>Predict what lung disease you might have</p>
           </div>
         </div>
         {/* End of Service Card */}
         {/* Service Card */}
         <div
           className="service-card"
-          onClick={() => history.push("/disease-predictor")}
+          onClick={() => history.push("/breast-cancer-detector")}
         >
           <div className="service-img-container">
-            <img src={PneumoniaImg} alt="Pneumonia" className="service-img" />
+            <img src={BreastImg} alt="Breast Cancer" className="service-img" />
             <div className="service-img-overlay"></div>
           </div>
           <div className="service-details-container">
-            <h3>Pneumonia Predictor</h3>
-            <p>Predict whether you have Pneumonia</p>
-          </div>
-        </div>
-        {/* End of Service Card */}
-        {/* Service Card */}
-        <div
-          className="service-card"
-          onClick={() => history.push("/disease-predictor")}
-        >
-          <div className="service-img-container">
-            <img src={DiabetesImg} alt="Diabetes" className="service-img" />
-            <div className="service-img-overlay"></div>
-          </div>
-          <div className="service-details-container">
-            <h3>Diabetes Predictor</h3>
-            <p>Predict whether you have Diabetes</p>
+            <h3>Breast Cancer Detector</h3>
+            <p>Segment the Cancerous part of your Breast Ultrasound Image</p>
           </div>
         </div>
         {/* End of Service Card */}

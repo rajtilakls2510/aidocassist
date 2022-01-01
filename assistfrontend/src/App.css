@@ -592,12 +592,12 @@ Landing Page
   font-weight: 700;
   color: var(--primary-700);
   text-align: center;
+  font-size: 1.4rem;
 }
 
 .service-details-container > p {
   text-align: center;
   color: var(--secondary-900);
-  font-size: var(--small-text);
 }
 
 /*
