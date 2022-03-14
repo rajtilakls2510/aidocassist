@@ -2,8 +2,7 @@
 (https://www.kaggle.com/itachi9604/disease-symptom-description-dataset?select=dataset.csv)
 - Bone Fracture Detection X ray
 (Mura Dataset: https://stanfordmlgroup.github.io/competitions/mura/)
-- Covid-19 using Chest X Ray
-- Pneumonia using Chest X Ray
-- Breast Cancer Detection
-- Diabetes Detection
-- Tumour Detection (Just for Future) (https://www.kaggle.com/amitkarmakar41/tumour-multiclass-dataset) 
+- Covid-19 Pneumonia using Chest X Ray
+(https://www.kaggle.com/tawsifurrahman/covid19-radiography-database)
+- Breast Cancer Segmentation
+https://www.kaggle.com/aryashah2k/breast-ultrasound-images-dataset
