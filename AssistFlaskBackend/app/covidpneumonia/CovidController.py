@@ -2,11 +2,19 @@ from app import application as app
 from app.covidpneumonia import *
 from flask import jsonify, request
 import tensorflow as tf
+import cv2
+import numpy as np
 
 classes = ['Covid', 'Non-Covid Lung Infection', 'Normal', 'Viral Pneumonia']
 
-@app.route("/covidpneumonia")
+REQUESTMAPPING = "/covidpneumonia"
+
+@app.route(REQUESTMAPPING+"/predict", methods=['POST'])
 def get_covid_pred():
-    input_image = tf.random.uniform(shape=(1,170,250,3), maxval=255)
-    prediction = model.predict(input_image)
-    return jsonify({"pred": classes[tf.argmax(prediction, axis = 1).numpy()[0]]})
+    img = request.files['img']
+    img = cv2.imdecode(np.fromstring(img.read(), np.uint8), cv2.IMREAD_COLOR)
+    return jsonify({"pred": predict_covid(img)})
+
+def predict_covid(img):
+    prediction = model.predict(tf.constant([img], dtype=tf.float32))
+    return  classes[tf.argmax(prediction, axis = 1).numpy()[0]]
