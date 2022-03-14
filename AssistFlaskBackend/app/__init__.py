@@ -7,5 +7,6 @@ CORS(application, resources={r"*": {"origins": "*"}})
 
 # All routes of the Disease Predictor
 from app.diseasepredictor import DiseaseController
+from app.covidpneumonia import CovidController
 
 
