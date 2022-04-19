@@ -16,5 +16,8 @@ def get_covid_pred():
     return jsonify({"pred": predict_covid(img)})
 
 def predict_covid(img):
-    prediction = model.predict(tf.constant([img], dtype=tf.float32))
-    return  classes[tf.argmax(prediction, axis = 1).numpy()[0]]
+    prediction = model(tf.constant([img], dtype=tf.float32)).numpy()[0]
+    pred = []
+    for class_, prob in zip(classes, prediction):
+        pred.append({"label": class_, "probability": prob.item()})
+    return  pred
