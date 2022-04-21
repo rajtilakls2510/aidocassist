@@ -32,6 +32,10 @@ const DiseasePage = () => {
   const [lowPrediction, setLowPrediction] = useState(true);
   const selectedSymptomRef = useRef([]);
   const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState({
+    there: false,
+    msg: "",
+  });
 
   // reasonModalOpen: Stores whether the explanation modal for the prediction is open or not
   const [reasonModalOpen, setReasonModalOpen] = useState(false);
@@ -39,6 +43,7 @@ const DiseasePage = () => {
   // Use Effects
   useEffect(() => {
     // Retrieving all available symptoms
+    setNotification({ ...notification, there: false });
     Api.getDiseaseSymptoms()
       .then((res) => {
         setallSymptoms(res.data);
@@ -51,9 +56,15 @@ const DiseasePage = () => {
         symptom_types = Array.from(symptom_types);
 
         setSymptomTypes(symptom_types);
+        setNotification({ there: false, msg: "" });
       })
       .catch((err) => {
-        console.log(err.response);
+        if (err.response)
+          setNotification({
+            there: true,
+            msg: `Error with code ${err.response.status}`,
+          });
+        else setNotification({ there: true, msg: "Network Error" });
       });
   }, []);
 
@@ -152,17 +163,24 @@ const DiseasePage = () => {
       symptoms: selectedSymptoms.map((symptom) => symptom.symptom),
     };
     setLoading(true);
+
     Api.predictDisease(symptom_array)
       .then((res) => {
         setPredictedResults(res.data);
         console.log(res.data);
         setLowPrediction(res.data.probability < 0.6);
+        setNotification({ there: false, msg: "" });
+        if (stage < 2) setStage(2);
       })
       .catch((err) => {
-        console.log(err.response);
+        if (err.response)
+          setNotification({
+            there: true,
+            msg: `Error with code ${err.response.status}`,
+          });
+        else setNotification({ there: true, msg: "Network Error" });
       })
       .finally(() => {
-        if (stage < 2) setStage(2);
         setLoading(false);
       });
   };
@@ -307,30 +325,39 @@ const DiseasePage = () => {
             onChange={(e) => setSearchText(e.target.value)}
             placeholder="Search Symptoms"
           />
-          {symptomTypes.map((type) => {
-            return (
-              <>
-                <h5>{type} Symptoms</h5>
-                <div className="symptom-type-container">
-                  {contextSymptoms
-                    .filter((symptom) => {
-                      return symptom.type === type;
-                    })
-                    .map((symptom) => {
-                      return (
-                        <article
-                          key={symptom.symptom}
-                          className="single-symptom"
-                          onClick={() => handleSymptomClick(symptom)}
-                        >
-                          <p>{symptom.symptom.split("_").join(" ")}</p>
-                        </article>
-                      );
-                    })}
-                </div>
-              </>
-            );
-          })}
+          {notification.there ? (
+            <div
+              className={`alert alert-danger pred-alert `}
+              onClick={() => setNotification({ ...notification, there: false })}
+            >
+              {notification.msg}
+            </div>
+          ) : (
+            symptomTypes.map((type) => {
+              return (
+                <>
+                  <h5>{type} Symptoms</h5>
+                  <div className="symptom-type-container">
+                    {contextSymptoms
+                      .filter((symptom) => {
+                        return symptom.type === type;
+                      })
+                      .map((symptom) => {
+                        return (
+                          <article
+                            key={symptom.symptom}
+                            className="single-symptom"
+                            onClick={() => handleSymptomClick(symptom)}
+                          >
+                            <p>{symptom.symptom.split("_").join(" ")}</p>
+                          </article>
+                        );
+                      })}
+                  </div>
+                </>
+              );
+            })
+          )}
         </div>
       </section>
 

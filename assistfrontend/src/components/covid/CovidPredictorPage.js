@@ -105,8 +105,8 @@ const CovidPredictorPage = () => {
               msg: `Error Occured with status code: ${err.response.status}`,
             });
           else setNotification({ there: true, msg: err.message });
-          // setChartData(null);
-          // setPredictions([]);
+          setChartData(null);
+          setPredictions([]);
         })
         .finally(() => {
           if (stage < 2) setStage(2);
