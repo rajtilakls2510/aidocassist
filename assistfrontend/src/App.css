@@ -992,6 +992,10 @@ Covid Page
   align-items: flex-start;
 }
 
+.covid-works-img{
+  height: 0;
+}
+
 .covid-upload-section{
   margin-top: 1rem;
   width: 100%;
@@ -1033,6 +1037,16 @@ Covid Page
 }
 
 @media screen and (min-width: 768px) {
+  .covid-description-section{
+    flex-direction: row;
+    column-gap: 1.5rem;
+    justify-content: space-between;
+  }
+  .covid-works-img{
+    height: auto;
+    width: 40vw;
+  }
+
   .covid-upload-section{
     flex-direction: row;
     justify-content: space-between;

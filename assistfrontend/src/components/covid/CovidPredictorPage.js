@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Api from "../../services/api";
 import NoPreviewImg from "../../images/no_preview.jpg";
+import CovidWorksImg from "../../images/covid_works.png";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,6 +11,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import { Bar } from "react-chartjs-2";
 
 ChartJS.register(
@@ -18,7 +20,8 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ChartDataLabels
 );
 
 const CovidPredictorPage = () => {
@@ -71,9 +74,9 @@ const CovidPredictorPage = () => {
       datasets: [
         {
           // Label for bars
-          label: "Confidence",
+          label: "Confidence (%)",
           // Data or value of your each variable
-          data: pred.map((pre) => pre.probability * 100),
+          data: pred.map((pre) => Math.round(pre.probability * 10000) / 100),
           // Color of each bar
           backgroundColor: pred.map((pre) => "#ffc857"),
           // Border color of each bar
@@ -122,13 +125,16 @@ const CovidPredictorPage = () => {
         <div className="title-underline"></div>
       </section>
       <section className="covid-description-section">
-        <p>Upload your Chest X-Ray to predict what disease you have among:</p>
-        <ul className="precautions-container">
-          <li className="single-precaution">Normal</li>
-          <li className="single-precaution">Covid-19</li>
-          <li className="single-precaution">Non-Covid Lung Infection</li>
-          <li className="single-precaution">Viral Pneumonia</li>
-        </ul>
+        <div className="covid-description-container">
+          <p>Upload your Chest X-Ray to predict what disease you have among:</p>
+          <ul className="precautions-container">
+            <li className="single-precaution">Normal</li>
+            <li className="single-precaution">Covid-19</li>
+            <li className="single-precaution">Non-Covid Lung Infection</li>
+            <li className="single-precaution">Viral Pneumonia</li>
+          </ul>
+        </div>
+        <img src={CovidWorksImg} alt="" className="covid-works-img" />
       </section>
       <section className="covid-upload-section">
         <div className="covid-file-selection-container">
@@ -184,6 +190,9 @@ const CovidPredictorPage = () => {
                         ],
                       },
                       plugins: {
+                        datalabels: {
+                          color: "black",
+                        },
                         title: {
                           display: true,
                           text: "Confidence for each Disease",
