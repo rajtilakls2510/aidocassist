@@ -762,7 +762,7 @@ Disease Page
   display: flex;
   flex-direction: column;
   row-gap: 0.5rem;
-  transform-origin: 50% 100%;
+  transform-origin: 50% 0%;
   height: 0;
   transform: scaleY(0);
   overflow: hidden;
@@ -1028,6 +1028,9 @@ Covid Page
   border-radius: var(--borderRadius);
   box-shadow: var(--shadow-2);
 }
+.chart-container{
+  width:100%;
+}
 
 @media screen and (min-width: 768px) {
   .covid-upload-section{
@@ -1046,5 +1049,8 @@ Covid Page
   }
   .covid-preview{
     width: 30vw;
+  }
+  .chart-container{
+    width:40vw;
   }
 }

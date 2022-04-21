@@ -1,6 +1,25 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Api from "../../services/api";
 import NoPreviewImg from "../../images/no_preview.jpg";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const CovidPredictorPage = () => {
   // States
@@ -11,14 +30,12 @@ const CovidPredictorPage = () => {
   const [imgFile, setImgFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(null);
-  const [predictions, setPredictions] = useState({
-    label: null,
-    confidence: null,
-  });
+  const [predictions, setPredictions] = useState([]);
   const [notification, setNotification] = useState({
-    there: true,
-    msg: "Some text",
+    there: false,
+    msg: "",
   });
+  const [chartData, setChartData] = useState(null);
 
   useEffect(() => {
     // Handling the stage changes of the page
@@ -36,16 +53,36 @@ const CovidPredictorPage = () => {
     setImgFile(e.target.files[0]);
   };
 
-  const handlePredictions = (pred) => {
-    setPredictions(
-      pred.pred.reduce(
-        (acc, current) => {
-          if (current.probability > acc.probability) acc = current;
-          return acc;
-        },
-        { label: null, probability: 0 }
-      )
+  const getMaxPredictions = () => {
+    return predictions.reduce(
+      (acc, current) => {
+        if (current.probability > acc.probability) acc = current;
+        return acc;
+      },
+      { label: null, probability: 0 }
     );
+  };
+  const handlePredictions = (pred) => {
+    setPredictions(pred);
+    // Calculating data for chart
+    let data = {
+      // Name of the variables on x-axies for each bar
+      labels: pred.map((pre) => pre.label),
+      datasets: [
+        {
+          // Label for bars
+          label: "Confidence",
+          // Data or value of your each variable
+          data: pred.map((pre) => pre.probability * 100),
+          // Color of each bar
+          backgroundColor: pred.map((pre) => "#ffc857"),
+          // Border color of each bar
+          borderColor: pred.map((pre) => "#665023"),
+          borderWidth: 1,
+        },
+      ],
+    };
+    setChartData(data);
   };
 
   const handlePredictClick = () => {
@@ -56,7 +93,7 @@ const CovidPredictorPage = () => {
       body.append("img", imgFile);
       Api.predictCovid(body)
         .then((res) => {
-          handlePredictions(res.data);
+          handlePredictions(res.data.pred);
         })
         .catch((err) => {
           if (err.response)
@@ -65,6 +102,8 @@ const CovidPredictorPage = () => {
               msg: `Error Occured with status code: ${err.response.status}`,
             });
           else setNotification({ there: true, msg: err.message });
+          // setChartData(null);
+          // setPredictions([]);
         })
         .finally(() => {
           if (stage < 2) setStage(2);
@@ -124,12 +163,36 @@ const CovidPredictorPage = () => {
               <h5 className="disease-pred-title">Prediction Results: </h5>
               <h5>
                 <span className="disease-field"> Disease: </span>
-                {predictions.label}
+                {getMaxPredictions().label}
               </h5>
               <p>
                 <span className="disease-field"> Confidence: </span>
-                {predictions.probability} %
+                {Math.round(getMaxPredictions().probability * 10000) / 100}%
               </p>
+              {chartData && (
+                <div className="chart-container">
+                  <Bar
+                    data={chartData}
+                    options={{
+                      scales: {
+                        yAxes: [
+                          {
+                            ticks: {
+                              beginAtZero: true,
+                            },
+                          },
+                        ],
+                      },
+                      plugins: {
+                        title: {
+                          display: true,
+                          text: "Confidence for each Disease",
+                        },
+                      },
+                    }}
+                  />
+                </div>
+              )}
             </>
           )}
         </div>
