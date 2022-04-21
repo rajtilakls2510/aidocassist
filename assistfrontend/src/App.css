@@ -163,6 +163,9 @@ ul {
   background: var(--primary-700);
   box-shadow: var(--shadow-2);
 }
+.btn:disabled{
+  cursor: auto;
+}
 .btn-hipster {
   color: var(--secondary-900);
   background: var(--secondary-500);
@@ -610,10 +613,10 @@ Disease Page
 ===============
 */
 
-.disease-page {
+.pred-page {
   display: flex;
   flex-direction: column;
-  row-gap: 0.7rem;
+  row-gap: 1.5rem;
   align-items: center;
   padding-top: 0.8rem;
 }
@@ -964,6 +967,7 @@ Disease Page
   .disease-prediction-container-show {
     width: max-content;
     transform: scaleX(1);
+    margin:0;
   }
   .symptoms-container {
     width: 100%;
@@ -972,5 +976,75 @@ Disease Page
   .disease-modal-card {
     width: 80vw;
     height: 90vh;
+  }
+}
+
+/*
+===============
+Covid Page
+===============
+*/
+.covid-description-section{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.3rem;
+  align-items: flex-start;
+}
+
+.covid-upload-section{
+  margin-top: 1rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1.5rem;
+}
+
+.covid-file-selection-container{
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+
+.covid-preview-prediction-section{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1.5rem;
+}
+
+.covid-preview-container{
+  
+  display: flex;
+  flex-direction: column;
+  row-gap: 1.5rem;
+}
+
+.covid-preview{
+  width: 100%;
+  display: block;
+  object-position: center;
+  object-fit: contain;
+  border-radius: var(--borderRadius);
+  box-shadow: var(--shadow-2);
+}
+
+@media screen and (min-width: 768px) {
+  .covid-upload-section{
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+  }
+  .covid-preview-container{
+    width: 40vw;
+  }
+  .covid-preview-prediction-section{
+    flex-direction: row;
+    column-gap: 3rem;
+    align-items: flex-start;
+  }
+  .covid-preview{
+    width: 30vw;
   }
 }

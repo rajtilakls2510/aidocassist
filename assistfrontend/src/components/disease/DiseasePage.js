@@ -167,8 +167,12 @@ const DiseasePage = () => {
       });
   };
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
-    <main className="page disease-page">
+    <main className="page pred-page">
       <section className="header-section">
         <h3 className="title">Disease Predictor</h3>
         <div className="title-underline"></div>
