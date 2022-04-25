@@ -126,7 +126,10 @@ const CovidPredictorPage = () => {
       </section>
       <section className="covid-description-section">
         <div className="covid-description-container">
-          <p>Upload your Chest X-Ray to predict what disease you have among:</p>
+          <p>
+            Upload your Chest X-Ray to predict what Lung disease you might have
+            among:
+          </p>
           <ul className="precautions-container">
             <li className="single-precaution">Normal</li>
             <li className="single-precaution">Covid-19</li>
