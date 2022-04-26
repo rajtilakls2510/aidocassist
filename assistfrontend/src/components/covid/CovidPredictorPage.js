@@ -150,7 +150,7 @@ const CovidPredictorPage = () => {
           <button
             className="btn predict-btn"
             onClick={handlePredictClick}
-            disabled={loading || stage == 0}
+            disabled={loading || stage === 0}
           >
             Predict
           </button>

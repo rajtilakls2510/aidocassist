@@ -16,8 +16,9 @@ const predictCovid = (body) => {
   return axios.post(API_URL + "/covidpneumonia/predict", body);
 };
 
-export default {
+const apiFunctions = {
   getDiseaseSymptoms,
   predictDisease,
   predictCovid,
 };
+export default apiFunctions;

@@ -66,18 +66,21 @@ const DiseasePage = () => {
           });
         else setNotification({ there: true, msg: "Network Error" });
       });
+    // eslint-disable-next-line
   }, []);
 
   // Search UseEffect
   useEffect(() => {
     // Searching from symptoms using the search text
     searchSymptoms();
+    // eslint-disable-next-line
   }, [searchText, selectedSymptoms]);
 
   useEffect(() => {
     // Handling the stage changes of the page
     if (selectedSymptoms.length === 0 && stage > 0) setStage(0);
     if (selectedSymptoms.length > 0 && stage < 1) setStage(1);
+    // eslint-disable-next-line
   }, [selectedSymptoms]);
 
   const searchSymptoms = () => {
