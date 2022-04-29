@@ -29,25 +29,6 @@ const LandingPage = () => {
         {/* Service Card */}
         <div
           className="service-card"
-          onClick={() => history.push("/hand-fracture-detector")}
-        >
-          <div className="service-img-container">
-            <img
-              src={BoneFractureImg}
-              alt="Hand Fracture"
-              className="service-img"
-            />
-            <div className="service-img-overlay"></div>
-          </div>
-          <div className="service-details-container">
-            <h3>Hand Fracture Detector</h3>
-            <p>Detect the fracture in your arms' X-Ray</p>
-          </div>
-        </div>
-        {/* End of Service Card */}
-        {/* Service Card */}
-        <div
-          className="service-card"
           onClick={() => history.push("/covid19-pneumonia-predictor")}
         >
           <div className="service-img-container">
@@ -72,6 +53,25 @@ const LandingPage = () => {
           <div className="service-details-container">
             <h3>Breast Cancer Detector</h3>
             <p>Segment the Cancerous part of your Breast Ultrasound Image</p>
+          </div>
+        </div>
+        {/* End of Service Card */}
+        {/* Service Card */}
+        <div
+          className="service-card"
+          onClick={() => history.push("/hand-fracture-detector")}
+        >
+          <div className="service-img-container">
+            <img
+              src={BoneFractureImg}
+              alt="Hand Fracture"
+              className="service-img"
+            />
+            <div className="service-img-overlay"></div>
+          </div>
+          <div className="service-details-container">
+            <h3>Hand Fracture Detector</h3>
+            <p>Detect the fracture in your arms' X-Ray</p>
           </div>
         </div>
         {/* End of Service Card */}

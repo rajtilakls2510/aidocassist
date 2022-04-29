@@ -16,9 +16,14 @@ const predictCovid = (body) => {
   return axios.post(API_URL + "/covidpneumonia/predict", body);
 };
 
+const predictFracture = (body) => {
+  return axios.post(API_URL + "/fracture/detect", body);
+};
+
 const apiFunctions = {
   getDiseaseSymptoms,
   predictDisease,
   predictCovid,
+  predictFracture,
 };
 export default apiFunctions;
