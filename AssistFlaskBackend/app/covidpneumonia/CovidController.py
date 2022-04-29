@@ -1,7 +1,6 @@
 from app import application as app
 from app.covidpneumonia import *
 from flask import jsonify, request
-import tensorflow as tf
 import cv2
 import numpy as np
 
