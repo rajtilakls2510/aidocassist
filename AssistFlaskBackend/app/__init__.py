@@ -10,5 +10,6 @@ CORS(application, resources={r"*": {"origins": "*"}})
 from app.diseasepredictor import DiseaseController
 from app.covidpneumonia import CovidController
 from app.fracturedetector import FractureController
+from app.breastcancer import BreastController
 
 
