@@ -7,6 +7,7 @@ import DiseasePage from "./components/disease/DiseasePage";
 import HandFracturePage from "./components/handfracture/HandFracturePage";
 import CovidPredictorPage from "./components/covid/CovidPredictorPage";
 import BreastCancerPage from "./components/breastcancer/BreastCancerPage";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/disease-predictor" component={DiseasePage} />
           <Route exact path="*" component={LandingPage} />
         </Switch>
+        <Footer />
       </Router>
     </div>
   );

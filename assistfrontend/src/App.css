@@ -1068,3 +1068,58 @@ Covid Page
     width:40vw;
   }
 }
+
+
+/* =======================
+FOOTER
+========================= */
+
+.footer{
+  min-height: 30vh;
+  background-color: var(--primary-600);
+  color: var(--white);
+  border-top: 3px solid var(--primary-700);
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+  align-items: center;
+}
+
+.dev-team{
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.2rem;
+  align-items: center;
+
+}
+
+.footer-logo{
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  box-shadow: var(--shadow-1);
+}
+.project-details{
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.2rem;
+  align-items: center;
+
+}
+
+@media screen and (min-width: 768px) {
+  .footer{
+    padding: 2rem 4rem;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .dev-team{
+    align-items: flex-start;
+  }
+  .project-details{
+    align-items: flex-end;
+  }
+}

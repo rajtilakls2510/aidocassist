@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FaBars } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Logo from "../images/logo-title.jpg";
@@ -9,7 +9,10 @@ const Navbar = () => {
 
   const handleToggle = (e) => {
     setNavOpen((prevState) => !prevState);
-    if (!navOpen) {
+  };
+
+  useEffect(() => {
+    if (navOpen) {
       const links = linksRef.current.querySelectorAll(".nav-link");
       let height = `${
         links[0].getBoundingClientRect().height * links.length
@@ -18,7 +21,8 @@ const Navbar = () => {
     } else {
       linksRef.current.style.height = 0;
     }
-  };
+  }, [navOpen]);
+
   return (
     <nav className="navbar">
       <div className="nav-center">
@@ -32,7 +36,11 @@ const Navbar = () => {
         <div className="nav-links-container " ref={linksRef}>
           <ul className="nav-links ">
             <li>
-              <Link to="/" className="nav-link" onClick={handleToggle}>
+              <Link
+                to="/"
+                className="nav-link"
+                onClick={() => setNavOpen(false)}
+              >
                 Home
               </Link>
             </li>
