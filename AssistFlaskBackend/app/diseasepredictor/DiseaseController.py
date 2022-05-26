@@ -2,7 +2,7 @@ from app import application as app
 from app.diseasepredictor import *
 from flask import jsonify, request
 import numpy as np
-import shap
+import shap, math
 
 REQUESTMAPPING="/disease"
 CONTRIB_THRESH=0.05
@@ -66,6 +66,9 @@ def predictDisease():
         desc_prec = disease_desc_prec[disease_desc_prec['Disease']==pred_disease]
         disease_description = desc_prec["Description"].values[0]
         disease_precautions=desc_prec.iloc[0, 2:].values.tolist()
+        for i in range(len(disease_precautions)):
+            if math.isnan(disease_precautions[i]):
+                disease_precautions.pop(i)
     except:
-       return jsonify({"disease":pred_disease, "probability":pred_prob, "description": "", "precautions":[], "force_plot":shap_html}), 200
+       return jsonify({"disease":pred_disease, "probability":pred_prob, "description": "", "precautions":[], "force_plot":shap_html, "shap_values": input_symptom_shap_values, "contribution_threshold": CONTRIB_THRESH}), 200
     return jsonify({"disease":pred_disease, "probability":pred_prob, "description": disease_description, "precautions": disease_precautions, "force_plot":shap_html, "shap_values": input_symptom_shap_values, "contribution_threshold": CONTRIB_THRESH}), 200

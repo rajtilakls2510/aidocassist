@@ -169,8 +169,8 @@ const DiseasePage = () => {
 
     Api.predictDisease(symptom_array)
       .then((res) => {
+        console.log(res);
         setPredictedResults(res.data);
-        console.log(res.data);
         setLowPrediction(res.data.probability < 0.6);
         setNotification({ there: false, msg: "" });
         if (stage < 2) setStage(2);

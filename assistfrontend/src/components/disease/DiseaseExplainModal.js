@@ -34,7 +34,7 @@ export default function DiseaseExplainModal({
               and their presence/absence. For example, "Itching = 1" in Red
               means that the presense of itching contributed towards the
               prediction. Another example, "Joint pain = 0" in Red means that
-              the absence of joint pain contributed against the prediction. For
+              the absence of joint pain contributed towards the prediction. For
               actual numbers, refer to the contribution table presented later.
             </small>
           </div>
