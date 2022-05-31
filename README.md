@@ -1,6 +1,7 @@
 # AI Doctor Assistant
 ### Your assistant to Health-care related problems 
 
+![Screenshot (363)](https://user-images.githubusercontent.com/53657825/171113357-b6ccf216-f9a3-465c-a775-5b0782bb87c1.png)
 
 We have successfully developed a fully compact solution for basic diseases with Automated assistance. The platform is able to predict the severity of critical diseases such as Covid-19, Pneumonia, Breast cancer, etc. through X-Rays. This provides a self detecting capability to the patients. It will be time efficient and will prove to be very pivotal in the long run as critical diseases, if detected early, can increase the chances of saving a life.
 
