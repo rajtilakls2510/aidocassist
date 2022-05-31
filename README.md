@@ -21,3 +21,16 @@ We have successfully developed a fully compact solution for basic diseases with 
 - **_Tensorflow and Keras_** : Deep Learning Models
 - **_Flask_** : Backend Server
 - **_ReactJS_** : Frontend Server
+
+#### Development Details:
+
+- **College** : Techno Main Salt Lake, Kolkata
+- **University** : Maulana Abul Kalam Azad University of Technology
+- **Department** : Computer Science and Engineering
+- **Mentor** : Prof. Srimanta Kundu
+- **Team Details**:
+  
+  - Rajtilak Pal - 13000118069
+  - Raj Saha - 13000118073
+  - Abhinav Chandra Jha - 13000218131
+  - Raunak Bahadur Sinha - 13000118066
